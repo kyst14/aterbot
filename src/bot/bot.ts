@@ -8,7 +8,7 @@ import 'dotenv/config'
 import { Bot, type Context } from 'grammy'
 import { z } from 'zod'
 
-const BOT_TOKEN = process.env.BOT_TOKEN
+export const BOT_TOKEN = process.env.BOT_TOKEN
 
 if (!BOT_TOKEN) {
 	throw new Error('BOT_TOKEN is not defined')
@@ -49,7 +49,13 @@ bot.command('run', async ctx => {
 export async function runBot() {
 	await bot.init()
 
-	bot.start()
+	if (process.env.WEBHOOK === 'true') {
+		await bot.api.setWebhook(process.env.BASE_URL! + BOT_TOKEN)
+	} else {
+		bot.start()
+	}
 
 	return bot
 }
+
+export default bot
